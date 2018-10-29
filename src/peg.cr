@@ -71,7 +71,7 @@ macro parser_expr(ast)
             }
         {% end %}
     {% elsif ast.class_name == "SymbolLiteral" %}
-        %rules["{{ ast.id }}"]
+        rules["{{ ast.id }}"]
     {% elsif ast.class_name == "Expressions" %}
         parser_expr({{ ast.expressions[0] }})
     {% end %}
@@ -80,13 +80,13 @@ end
 macro parser(ast)
     {% if ast.class_name == "NamedTupleLiteral" %}
         Parser.new ->(%str : String) {
-            %rules = Hash(String, Parser).new
+            rules = Hash(String, Parser).new
             {% for key, value in ast %}
-                %rules["{{ key.id }}"] = Parser.new ->(%str : String) {
+                rules["{{ key.id }}"] = Parser.new ->(%str : String) {
                     parser_expr({{ value }}).parse(%str)
                 }
             {% end %}
-            %rules["main"].parse(%str)
+            rules["main"].parse(%str)
         }
     {% end %}
 end
