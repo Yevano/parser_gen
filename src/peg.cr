@@ -69,6 +69,15 @@ macro parser_expr(ast)
                 }
                 ParseResult.new(true, %string.size(), %string)
             }
+        {% elsif ast.name == "maybe" %}
+            Parser.new ->(%str : String) {
+                %pr = parser_expr({{ ast.receiver }}).parse(%str)
+                if %pr.success
+                    %pr
+                else
+                    ParseResult.new(true, 0, "")
+                end
+            }
         {% end %}
     {% elsif ast.class_name == "SymbolLiteral" %}
         rules["{{ ast.id }}"]
