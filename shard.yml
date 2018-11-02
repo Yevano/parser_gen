@@ -1,3 +1,7 @@
 name: parser_gen
 version: 0.1.0
 license: MIT
+
+targets:
+    parser_gen:
+        main: src/peg.cr
