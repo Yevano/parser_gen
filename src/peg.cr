@@ -40,7 +40,16 @@ class Parser
 end
 
 macro parser_expr(ast)
-    {% if ast.class_name == "RegexLiteral" %}
+    {% if ast.class_name == "StringLiteral" %}
+        Parser.new ->(%str : String) {
+            %m = {{ ast }}
+            if %m.size() <= %str.size() && %m == %str[0...%m.size()]
+                ParseResult.new(true, Set(ParseResult).new, %m.size(), %m)
+            else
+                ParseResult.new(false)
+            end
+        }
+    {% elsif ast.class_name == "RegexLiteral" %}
         Parser.new ->(%str : String) {
             %md = {{ ast }}.match(%str)
             if %md && %md.begin == 0
