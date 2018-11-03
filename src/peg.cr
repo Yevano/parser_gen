@@ -8,7 +8,7 @@ class ParseResult
     def initialize(@success, @children = Set(ParseResult).new, @byte_end = 0, @parsed = "")
     end
 
-    def var(sym : Symbol) : ParseResult
+    def var(sym : Symbol) : ParseResult?
         if @label == sym
             self
         else
@@ -18,13 +18,17 @@ class ParseResult
             if elem
                 elem.var(sym)
             else
-                raise "Could not find var #{sym}."
+                nil
             end
         end
     end
 
+    def var!(sym : Symbol) : ParseResult
+        var(sym).not_nil!
+    end
+
     def to_s(io)
-        io << (success ? "Success: '#{@parsed}'" : "Failure")
+        io << (success ? "#{@label}: Success: '#{@parsed}'" : "Failure")
     end
 end
 
